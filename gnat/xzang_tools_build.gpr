@@ -1,0 +1,8 @@
+with "xzang_libs_build";
+project xzang_tools_build is 
+    for Main use ("xza.adb");
+    for Exec_Dir use "../bin";
+    for Source_Dirs use ("../src/tools/");
+    for Object_Dir use "../obj";
+    for Languages use ("Ada");
+end xzang_tools_build;

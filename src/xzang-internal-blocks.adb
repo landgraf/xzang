@@ -1,6 +1,8 @@
 with xzang.internal.types; use xzang.internal.types;
 with xzang.internal.variable_length_integers;
 with xzang.internal.block_filters; use xzang.internal.block_filters;
+with Interfaces;
+with Ada.Assertions; use Ada.Assertions;
 package body xzang.internal.blocks is
 
    procedure Read_header_Size (Self : in out block; R : in out Reader)
@@ -15,28 +17,20 @@ package body xzang.internal.blocks is
 
    procedure Read_Flags (Self : in out block; R : in out Reader)
    is
+      use Interfaces;
       Length : constant := 8;
-      raw_flags : bit_array(1..Length) :=
-         R.Read(Number_Of_Bits => Length);
-      reserved_bits : bit_array(1 .. 4) := (others => 1);
+      flags : byte := R.Read(1)(1);
+      subtype Bitint is Natural range 0..1;
    begin
-      for I in 1 .. 2 loop
-         self.header.number_of_filters :=
-            self.header.number_of_filters + 2**(I-1)*Integer'Val(raw_flags(I));
-      end loop;
-      debug("Number of filters:" & self.header.number_Of_Filters'Img);
-      reserved_bits := raw_flags (3 .. 6);
-      for reserved of  reserved_bits  loop
-         if reserved /= 0 then
-            raise BLOCK_ERROR with "Reserved must be null;";
-         end if;
-      end loop;
-      self.header.has_compressed :=
-         (case  raw_flags (7) is
-          when 1 => True, when 0 => False);
-      self.header.has_uncompressed :=
-         (case  raw_flags (8) is
-         when 1 => True, when 0 => False);
+      Self.header.number_of_Filters :=
+         Integer(flags and 16#03#) + 1;
+      Assert ( Self.header.number_of_Filters > 0 and
+         Self.header.number_of_Filters < 4 );
+      if Integer(flags and 16#3C#) /= 0 then
+         raise BLOCK_ERROR with "Reserved bits must be zero";
+      end if;
+      self.header.has_compressed := bitint(flags and 16#40#) /= 0;
+      self.header.has_uncompressed := bitint(flags and 16#80#) /= 0;
    end Read_Flags;
 
    procedure Read_Compressed (Self : in out block; R : in out Reader) is

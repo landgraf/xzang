@@ -11,7 +11,6 @@ package xzang.internal.block_headers is
    type block_header
        is record
       header_size : Integer := 0;
-      -- flags : block_header_flag; --  bit_array(1..8);
       number_of_filters : Integer := 0;
       has_compressed  : Boolean := False;
       has_uncompressed : Boolean := False;

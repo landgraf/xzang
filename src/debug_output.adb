@@ -26,36 +26,36 @@
 --  however invalidate any other reasons why the executable file  might be  --
 --  covered by the  GNU Public License.                                     --
 ------------------------------------------------------------------------------
-package body debug_output is 
+package body debug_output is
 
-    procedure Debug(Str : in String) is 
+    procedure Debug(Str : in String) is
     begin
         if is_debug_enabled then
             Put_Line("DEBUG: " & Str);
         end if;
     end Debug;
-    procedure Debug(Str : in Unbounded_String) is 
+    procedure Debug(Str : in Unbounded_String) is
     begin
         if is_debug_enabled then
             Debug(To_String(Str));
         end if;
     end Debug;
-    procedure Error(Str : in String) is 
+    procedure Error(Str : in String) is
     begin
         Put_Line("ERROR: " & Str);
     end Error;
-    procedure Error(Str : in Unbounded_String) is 
+    procedure Error(Str : in Unbounded_String) is
     begin
         Error(To_String(Str));
     end Error;
-    procedure Warning(Str : in String) is 
+    procedure Warning(Str : in String) is
     begin
         Put_Line("WARNING: " & Str);
     end Warning;
-    procedure Warning(Str : in Unbounded_String) is 
+    procedure Warning(Str : in Unbounded_String) is
     begin
         Warning(To_String(Str));
     end Warning;
 
-end debug_output; 
+end debug_output;
 

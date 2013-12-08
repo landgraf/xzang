@@ -1,7 +1,7 @@
 with xzang.internal.types; use xzang.internal.types;
-package xzang.internal.stream_flags is 
-   type four_bit_array is  array (1 .. 4) of bit; 
-   for four_bit_array'Size use 4*bit'Size; 
+package xzang.internal.stream_flags is
+   type four_bit_array is  array (1 .. 4) of bit;
+   for four_bit_array'Size use 4*bit'Size;
    pragma Pack(four_bit_array);
 
    type stream_flag is record
@@ -17,7 +17,7 @@ package xzang.internal.stream_flags is
    for stream_flag'Size use 2*byte'Size;
 
    type mask_name is (reserved, none, CRC32, CRC64, SHA256);
-   function Decode_Mask (input : byte) return mask_name; 
-   -- Get bit_field as parameter 
-end xzang.internal.stream_flags; 
+   function Decode_Mask (input : byte) return mask_name;
+   -- Get bit_field as parameter
+end xzang.internal.stream_flags;
 

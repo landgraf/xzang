@@ -26,19 +26,19 @@
 --  however invalidate any other reasons why the executable file  might be  --
 --  covered by the  GNU Public License.                                     --
 ------------------------------------------------------------------------------
-with Ada.Text_IO; use Ada.Text_IO; 
+with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Environment_Variables;
 
-package debug_output is 
+package debug_output is
 
     procedure Debug(Str : in String);
     procedure Debug(Str : in Unbounded_String);
-    procedure Error(Str : in String); 
+    procedure Error(Str : in String);
     procedure Error(Str : in Unbounded_String);
-    procedure Warning(Str : in String); 
+    procedure Warning(Str : in String);
     procedure Warning(Str : in Unbounded_String);
-    private 
-    is_debug_enabled : boolean := (Ada.Environment_Variables.Exists("Adevlogs_Debug")); 
-end debug_output; 
+    private
+    is_debug_enabled : boolean := (Ada.Environment_Variables.Exists("Adevlogs_Debug"));
+end debug_output;
 

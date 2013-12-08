@@ -1,4 +1,4 @@
-package xzang.internal is 
+package xzang.internal is
    type dummy is null record;
-end xzang.internal; 
+end xzang.internal;
 

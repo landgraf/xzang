@@ -61,7 +61,6 @@ package body xzang.internal.block_headers is
       end bytes_to_crc32;
    begin
       self.CRC32 := bytes_to_crc32(R.Read(4));
-      warning(self.crc32'Img);
    end Read_CRC32; 
 
 
@@ -72,21 +71,15 @@ package body xzang.internal.block_headers is
       Read_Flags(Self, R);
       if self.has_compressed then
          Read_Compressed(Self, R);
-      else
-         warning("Compressed size is unknown");
       end if;
       if self.has_uncompressed then
          Read_uncompressed(Self, R);
-      else
-         warning("Uncompressed size is unknown");
       end if;
       if Self.number_of_Filters /= 1 then
          raise NOT_IMPLEMENTED with "Multiple filters are not implemented";
       end if;
       Read_filter (Self, R);
       self.offset := (r.offset - self.offset)/8;
-      debug("Header size: " & self.header_size'Img);
-      debug("Header length is " & self.offset'Img);
       declare
          padding : byte_array(1 .. Self.offset - 4) := 
             R.Read(Self.offset - 4); 

@@ -1,17 +1,17 @@
 with xzang.internal.types; use xzang.internal.types;
-package xzang.internal.block_headers is 
+package xzang.internal.block_headers is
 
    type block_header_flag is record
-      number_of_filters : bit_array(0 .. 1); 
-      reserved : bit_array(2 .. 5) := (others => 0); 
-      compressed_present : bit := 0; 
+      number_of_filters : bit_array(0 .. 1);
+      reserved : bit_array(2 .. 5) := (others => 0);
+      compressed_present : bit := 0;
       uncompressed_present : bit := 0;
-   end record; 
+   end record;
 
    type block_header
        is record
       header_size : Integer := 0;
-      -- flags : block_header_flag; --  bit_array(1..8); 
+      -- flags : block_header_flag; --  bit_array(1..8);
       number_of_filters : Integer := 0;
       has_compressed  : Boolean := False;
       has_uncompressed : Boolean := False;
@@ -19,5 +19,5 @@ package xzang.internal.block_headers is
       uncompressed : Integer := 0;
    end record;
 
-end xzang.internal.block_headers; 
+end xzang.internal.block_headers;
 

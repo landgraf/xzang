@@ -23,10 +23,10 @@ package body xzang.lzmastreams is
    procedure Read_Header (Self : in out lzmastream) is
       use internal.stream_headers;
    begin
-      self.header := bytes_to_header(Self.filereader.read(self.header'Size));
+      self.header := bytes_to_header(Self.filereader.read(self.header'Size/8));
    end Read_Header;
 
-   procedure Read_Block (Self : in out lzmastream) is 
+   procedure Read_Block (Self : in out lzmastream) is
       use xzang.internal.blocks;
    begin
       read (Self.block, Self.filereader);

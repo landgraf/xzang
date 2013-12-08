@@ -1,22 +1,24 @@
 package body xzang.internal.readers is
 
-   function Read(Self : in reader; Number_Of_Bytes : in Natural)
+   function Read(Self : in out Reader; Number_Of_Bytes : in Natural)
       return byte_array is
       buffer : byte_arraY(1..Number_Of_Bytes);
    begin
       for b of buffer loop
          byte'Read(Self.Stream, b);
+         Self.Offset := Self.Offset + b'Size;
       end loop;
       return buffer;
    end Read;
 
-   function Read (Self : in reader; Number_Of_Bits : in Natural)
+   function Read (Self : in out Reader; Number_Of_Bits : in Natural)
       return bit_array is
-      buffer : bit_array(1..Number_Of_bits) := (others => 0); 
+      buffer : bit_array(1..Number_Of_bits) := (others => 0);
    begin
       for b of buffer loop
-         bit'Read(Self.Stream, b); 
+         bit'Read(Self.Stream, b);
       end loop;
+      Self.Offset := Self.Offset +  buffer'Size;
       return buffer;
    end Read;
 
@@ -26,13 +28,14 @@ package body xzang.internal.readers is
       Self.Initialized := False;
    end Close;
 
-   function Read (Self : in reader)
+   function Read (Self : in out Reader)
       return Ada.Streams.Stream_element_Array
    is
       Sea : Ada.Streams.Stream_element_Array(1..Self.Max_Length);
       Last : Ada.Streams.Stream_element_offset;
    begin
       Ada.Streams.Stream_IO.Read (Self.File, Sea, Last );
+      Self.Offset := Self.Offset + 8*Integer(Last);
       return Sea(1..Last);
    end Read;
 
@@ -74,23 +77,26 @@ package body xzang.internal.readers is
       (Ada.Streams.Stream_IO.End_Of_File (Self.File) );
 
 
-   function Read_VLI (Self : in out reader) return byte_array is 
+   function Read_VLI (Self : in out reader) return byte_array is
       -- maximum length is 9 bytes
       buffers : byte_array(1..9);
-      Last : Integer := 0; 
+      Last : Integer := 0;
       result : Integer := Integer'First;
    begin
       for I in buffers'Range loop
-         buffers(I..I) := Self.Read(Number_Of_Bytes => 1 ); 
+         buffers(I..I) := Self.Read(Number_Of_Bytes => 1 );
          if Integer'Val(buffers(I)) > 127 then
-            debug("Last byte  has been reached. Length=" & I'img); 
+            debug("Last byte  has been reached. Length=" & I'img);
             Last := I;
             exit;
          end if;
       end loop;
+      Self.Offset := Self.Offset + 8*Last;
       return buffers(1..Last);
    end Read_VLI;
 
 
+   not overriding
+   function Offset (Self : in out reader) return Integer is (Self.offset);
 end xzang.internal.readers;
 

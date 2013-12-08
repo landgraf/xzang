@@ -11,15 +11,16 @@ package xzang.internal.readers is
       ) is limited new Ada.Finalization.Limited_Controlled with private;
    type reader_access is access all reader;
 
-   function Read (Self : in reader; Number_Of_Bytes : in Natural)
+   function Read (Self : in out Reader; Number_Of_Bytes : in Natural)
       return byte_array;
       --  read number of bytes and return them to the stream
 
-   function Read (Self : in reader; Number_Of_Bits : in Natural)
-      return bit_array;
+   function Read (Self : in out Reader; Number_Of_Bits : in Natural)
+      return bit_array
+      with Pre => Number_Of_Bits rem 8 = 0;
       --  read number of bits and return them to the stream
-   
-   function Read (Self : in reader)
+
+   function Read (Self : in out Reader)
       return Ada.Streams.Stream_element_Array
       with Pre => Ada.Streams.Stream_Element'Size = 8;
       --  read Stream_Element_Array and return it to the stream
@@ -44,10 +45,12 @@ package xzang.internal.readers is
    -- return True then end of file has been reached
 
    not overriding
-   function Read_VLI (Self : in out reader) return byte_array; 
+   function Read_VLI (Self : in out reader) return byte_array;
    -- Return byte_array with variable-length integer represenration
    -- see 1.2. Multibyte Integers section in the format.txt file
 
+   not overriding
+   function Offset (Self : in out reader) return Integer;
 private
 
    procedure Open (Self : in out reader);
@@ -63,6 +66,7 @@ private
       Last : Ada.Streams.Stream_element_offset;
       Initialized : Boolean := False;
       Buffer : Ada.Streams.Stream_element_Array(1..Max_Length);
+      Offset : Integer := 0;
    end record;
 
    procedure Free_String is new Ada.Unchecked_Deallocation (

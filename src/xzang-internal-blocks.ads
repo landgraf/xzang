@@ -4,8 +4,7 @@ package xzang.internal.blocks is
    BLOCK_ERROR : exception;
    type block is private;
 
-   procedure Read_header_Size (Self : in out block; R : in out Reader);
-   procedure Read_Flags (Self : in out block; R : in out Reader);
+   procedure Read (Self : in out block; R : in out reader);
 
    private
    type block is record

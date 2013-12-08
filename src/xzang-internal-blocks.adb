@@ -27,5 +27,11 @@ package body xzang.internal.blocks is
       self.header.flags.uncompressed_present := raw_flags (8);
    end Read_Flags;
 
+   procedure Read (Self : in out block; R : in out reader) is 
+   begin
+      Read_header_Size (Self, R); 
+      Read_Flags (Self, R);
+   end Read;
+
 end xzang.internal.blocks; 
 

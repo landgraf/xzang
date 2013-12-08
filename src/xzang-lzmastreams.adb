@@ -29,8 +29,7 @@ package body xzang.lzmastreams is
    procedure Read_Block (Self : in out lzmastream) is 
       use xzang.internal.blocks;
    begin
-      read_header_size (Self.block, Self.filereader);
-      read_flags (Self.block, Self.filereader);
+      read (Self.block, Self.filereader);
    end Read_Block;
 
    function Init(Name : in String; Buffer : in Integer)

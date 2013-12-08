@@ -7,6 +7,7 @@ package body xzang.lzmastreams is
 
    procedure Read_footer (Self : in out lzmastream) is 
       use internal.stream_footers;
+      use internal.stream_headers;
       use xzang.internal.stream_flags; 
    begin
       self.footer := bytes_to_footer(Self.filereader.read(self.footer'Size));
@@ -14,7 +15,7 @@ package body xzang.lzmastreams is
          raise parse_error;
       end if;
       if not check_magic(self.footer) or else 
-         self.footer.stream_flags /= self.header.stream_flags then
+         stream_flags(self.footer) /= stream_flags(self.header) then
          raise PARSE_ERROR;
       end if;
    end Read_footer;
@@ -35,7 +36,8 @@ package body xzang.lzmastreams is
          Length => Length);
    begin
       read_header(Self.all);
-      read_footer(Self.all);
+      --  After all
+      --  read_footer(Self.all);
       if not Is_LZMA_Stream(Self.all) then
          raise PARSE_ERROR with ("File: " & Name & "is not xz stream " & 
             "or corrupted");

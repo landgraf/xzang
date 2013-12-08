@@ -2,6 +2,9 @@ with Ada.Integer_Text_IO;  use Ada.Integer_Text_IO;
 with Ada.Text_IO;          use Ada.Text_IO;
 package body xzang.internal.stream_footers is 
 
+   function stream_flags (Self : in stream_footer) return stream_flag 
+   is (Self.stream_flags);
+
    function bytes_to_footer (bytes : in byte_array) return stream_footer
    is
       result : stream_footer; 
@@ -23,5 +26,6 @@ package body xzang.internal.stream_footers is
       return True;
    end Check_magic; 
 
+   function Check_CRC32 (Self : stream_footer) return Boolean is (False);
 end xzang.internal.stream_footers; 
 

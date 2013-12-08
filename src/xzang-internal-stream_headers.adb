@@ -1,4 +1,4 @@
-with GNAT.CRC32; use GNAT.CRC32;
+with GNAT.CRC32; 
 with Interfaces;
 with ada.streams; 
 package body xzang.internal.stream_headers is 
@@ -17,7 +17,8 @@ package body xzang.internal.stream_headers is
    end bytes_to_header;
 
    function Check_CRC32 (Self : in stream_header) return Boolean is 
-      crc : CRC32;
+      use GNAT.CRC32;
+      crc : GNAT.CRC32.CRC32;
       function flags_to_Sea (f : xzang.internal.stream_flags.stream_flag)
          return Ada.Streams.Stream_Element_Array is
          result : Ada.Streams.Stream_Element_Array(1..2); 
@@ -32,6 +33,9 @@ package body xzang.internal.stream_headers is
       return get_value(crc) = Interfaces.Unsigned_32'Val(self.crc32);
    end Check_CRC32;
 
+
+   function stream_flags (Self : in stream_header) return stream_flag
+   is (Self.stream_flags);
 
 end xzang.internal.stream_headers; 
 

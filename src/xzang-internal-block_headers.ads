@@ -1,14 +1,13 @@
 with xzang.internal.types; use xzang.internal.types;
+with xzang.internal.readers; use xzang.internal.readers;
 with Interfaces; use Interfaces;
+with xzang.internal.block_filters; use xzang.internal.block_filters;
 package xzang.internal.block_headers is
 
-   type block_header_flag is record
-      number_of_filters : bit_array(0 .. 1);
-      reserved : bit_array(2 .. 5) := (others => 0);
-      compressed_present : bit := 0;
-      uncompressed_present : bit := 0;
-   end record;
+   type block_header is private;
+   procedure Read (Self : in out block_header; R : in out Reader);
 
+   private
    type block_header
        is record
       header_size : Integer := 0;
@@ -17,6 +16,8 @@ package xzang.internal.block_headers is
       has_uncompressed : Boolean := False;
       compressed : Interfaces.Unsigned_64 := 0;
       uncompressed : Interfaces.Unsigned_64 := 0;
+      offset : Integer := 0;
+      filter : block_filter;
    end record;
 
 end xzang.internal.block_headers;

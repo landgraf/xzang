@@ -74,6 +74,23 @@ package body xzang.internal.readers is
       (Ada.Streams.Stream_IO.End_Of_File (Self.File) );
 
 
+   function Read_VLI (Self : in out reader) return byte_array is 
+      -- maximum length is 9 bytes
+      buffers : byte_array(1..9);
+      Last : Integer := 0; 
+      result : Integer := Integer'First;
+   begin
+      for I in buffers'Range loop
+         buffers(I..I) := Self.Read(Number_Of_Bytes => 1 ); 
+         if Integer'Val(buffers(I)) > 127 then
+            debug("Last byte  has been reached. Length=" & I'img); 
+            Last := I;
+            exit;
+         end if;
+      end loop;
+      return buffers(1..Last);
+   end Read_VLI;
+
 
 end xzang.internal.readers;
 

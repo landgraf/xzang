@@ -1,4 +1,5 @@
 with xzang.internal.types; use xzang.internal.types;
+with xzang.internal.variable_length_integers;
 package body xzang.internal.blocks is 
 
    procedure Read_header_Size (Self : in out block; R : in out Reader) 
@@ -15,22 +16,50 @@ package body xzang.internal.blocks is
       Length : constant := 8; 
       raw_flags : bit_array(1..Length) := 
          R.Read(Number_Of_Bits => Length);
+      reserved_bits : bit_array(1 .. 4) := (others => 1);
    begin
-      self.header.flags.number_Of_Filters := raw_flags (1 .. 2);
-      self.header.flags.reserved := raw_flags (3 .. 6);
-      for reserved of  self.header.flags.reserved  loop 
+      for I in 1 .. 2 loop
+         self.header.number_of_filters := 
+            self.header.number_of_filters + 2**(I-1)*Integer'Val(raw_flags(I));
+      end loop;
+      debug("Number of filters:" & self.header.number_Of_Filters'Img);
+      reserved_bits := raw_flags (3 .. 6);
+      for reserved of  reserved_bits  loop 
          if reserved /= 0 then
             raise BLOCK_ERROR with "Reserved must be null;";
          end if;
       end loop;
-      self.header.flags.compressed_present := raw_flags (7);
-      self.header.flags.uncompressed_present := raw_flags (8);
+      self.header.has_compressed := 
+         (case  raw_flags (7) is 
+          when 1 => True, when 0 => False);
+      self.header.has_uncompressed := 
+         (case  raw_flags (8) is
+         when 1 => True, when 0 => False);
    end Read_Flags;
+
+   procedure Read_Compressed (Self : in out block; R : in out Reader) is
+      Result : Integer := Integer'Last;
+   begin
+     self.header.compressed  := 
+        xzang.internal.variable_length_integers.decode(R.Read_VLI);
+   end Read_Compressed;
+
+   procedure Read_Uncompressed (Self : in out block; R : in out Reader) is
+   begin
+     self.header.uncompressed  := 
+        xzang.internal.variable_length_integers.decode(R.Read_VLI);
+   end Read_Uncompressed;
 
    procedure Read (Self : in out block; R : in out reader) is 
    begin
       Read_header_Size (Self, R); 
       Read_Flags (Self, R);
+      if self.header.has_compressed then 
+         Read_Compressed(Self, R); 
+      end if;
+      if self.header.has_uncompressed then 
+         Read_uncompressed(Self, R); 
+      end if;
    end Read;
 
 end xzang.internal.blocks; 

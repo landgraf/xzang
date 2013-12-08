@@ -39,6 +39,6 @@ package debug_output is
     procedure Warning(Str : in String);
     procedure Warning(Str : in Unbounded_String);
     private
-    is_debug_enabled : boolean := (Ada.Environment_Variables.Exists("Adevlogs_Debug"));
+    is_debug_enabled : boolean := (Ada.Environment_Variables.Exists("xzang_debug"));
 end debug_output;
 

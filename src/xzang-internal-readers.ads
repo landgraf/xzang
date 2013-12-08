@@ -43,6 +43,11 @@ package xzang.internal.readers is
    function EOF (Self : in out reader) return Boolean;
    -- return True then end of file has been reached
 
+   not overriding
+   function Read_VLI (Self : in out reader) return byte_array; 
+   -- Return byte_array with variable-length integer represenration
+   -- see 1.2. Multibyte Integers section in the format.txt file
+
 private
 
    procedure Open (Self : in out reader);

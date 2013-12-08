@@ -15,9 +15,5 @@ package xzang.internal.stream_flags is
       reserved at 0 range 12 .. 15;
    end record;
    for stream_flag'Size use 2*byte'Size;
-
-   type mask_name is (reserved, none, CRC32, CRC64, SHA256);
-   function Decode_Mask (input : byte) return mask_name;
-   -- Get bit_field as parameter
 end xzang.internal.stream_flags;
 

@@ -49,6 +49,22 @@ package body xzang.internal.block_headers is
       Read_Filter(Self.filter, R); 
    end Read_Filter;
 
+   procedure Read_CRC32 (Self : in out block_header; R : in out Reader) is 
+      function bytes_to_crc32 (bytes : in byte_array)
+         return four_byte_number
+      is
+         result : four_byte_number;
+         for result'address use bytes'address;
+         pragma Import (Ada, Result);
+      begin
+         return result;
+      end bytes_to_crc32;
+   begin
+      self.CRC32 := bytes_to_crc32(R.Read(4));
+      warning(self.crc32'Img);
+   end Read_CRC32; 
+
+
    procedure Read (Self : in out block_header; R : in out Reader) is 
    begin
       self.offset := R.offset;
@@ -81,6 +97,9 @@ package body xzang.internal.block_headers is
             end if;
          end loop;
       end;
+      Read_CRC32(Self, R);
+      pragma Compile_Time_Warning (Standard.True,  "CRC32 check is not implemented!");
+      warning("CRC32 verification is not implemented yet. Trust it as is");
 
    end Read;
 end xzang.internal.block_headers; 

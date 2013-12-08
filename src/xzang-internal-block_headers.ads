@@ -18,6 +18,7 @@ package xzang.internal.block_headers is
       uncompressed : Interfaces.Unsigned_64 := 0;
       offset : Integer := 0;
       filter : block_filter;
+      crc32 : four_byte_number := 0;
    end record;
 
 end xzang.internal.block_headers;

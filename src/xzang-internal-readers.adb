@@ -10,6 +10,16 @@ package body xzang.internal.readers is
       return buffer;
    end Read;
 
+   function Read (Self : in reader; Number_Of_Bits : in Natural)
+      return bit_array is
+      buffer : bit_array(1..Number_Of_bits) := (others => 0); 
+   begin
+      for b of buffer loop
+         bit'Read(Self.Stream, b); 
+      end loop;
+      return buffer;
+   end Read;
+
    procedure Close(Self : in out Reader) is
    begin
       Ada.Streams.Stream_IO.Close (Self.File);
@@ -62,6 +72,8 @@ package body xzang.internal.readers is
    not overriding
    function EOF (Self : in out reader) return Boolean is
       (Ada.Streams.Stream_IO.End_Of_File (Self.File) );
+
+
 
 end xzang.internal.readers;
 

@@ -2,6 +2,7 @@ with xzang.internal.readers;
 with xzang.internal.stream_headers;
 with xzang.internal.stream_footers;
 with xzang.internal.decompressors;
+with xzang.internal.blocks;
 with Ada.Streams;
 with xzang.internal.types; use xzang.internal.types;
 package xzang.lzmastreams is
@@ -38,6 +39,7 @@ package xzang.lzmastreams is
       filereader : xzang.internal.readers.reader(Name,Length);
       decompressor : xzang.internal.decompressors.decompressor;
       header : internal.stream_headers.stream_header;
+      block : internal.blocks.block;
       footer : internal.stream_footers.stream_footer;
    end record;
 end xzang.lzmastreams;

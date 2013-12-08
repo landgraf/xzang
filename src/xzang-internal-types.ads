@@ -16,6 +16,10 @@ package xzang.internal.types is
    for Four_Byte_Number'Size use 32;
    for Four_Byte_Number'Alignment use 1;
 
+   type bit_array is array (Natural range <>) of bit; 
+   for bit_array'Alignment use 1; 
+   pragma Pack(bit_array);
+
    type byte_array is array (Natural range <>) of byte;
    for byte_array'Alignment use 1;
 

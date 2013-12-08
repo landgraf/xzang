@@ -15,6 +15,10 @@ package xzang.internal.readers is
       return byte_array;
       --  read number of bytes and return them to the stream
 
+   function Read (Self : in reader; Number_Of_Bits : in Natural)
+      return bit_array;
+      --  read number of bits and return them to the stream
+   
    function Read (Self : in reader)
       return Ada.Streams.Stream_element_Array
       with Pre => Ada.Streams.Stream_Element'Size = 8;

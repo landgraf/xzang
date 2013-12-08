@@ -26,6 +26,13 @@ package body xzang.lzmastreams is
       self.header := bytes_to_header(Self.filereader.read(self.header'Size));
    end Read_Header;
 
+   procedure Read_Block (Self : in out lzmastream) is 
+      use xzang.internal.blocks;
+   begin
+      read_header_size (Self.block, Self.filereader);
+      read_flags (Self.block, Self.filereader);
+   end Read_Block;
+
    function Init(Name : in String; Buffer : in Integer)
       return lzmastream_access
    is
@@ -38,6 +45,7 @@ package body xzang.lzmastreams is
       read_header(Self.all);
       --  After all
       --  read_footer(Self.all);
+      Read_Block(Self.all);
       if not Is_LZMA_Stream(Self.all) then
          raise PARSE_ERROR with ("File: " & Name & "is not xz stream " &
             "or corrupted");

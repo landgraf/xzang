@@ -7,8 +7,6 @@ with Ada.Streams;
 with xzang.internal.types; use xzang.internal.types;
 package xzang.lzmastreams is
 
-   PARSE_ERROR : exception;
-
    type lzmastream(Name : US.String_Access := new String'("");
       Length : Ada.Streams.Stream_Element_Offset := 1000) is tagged limited private;
    type lzmastream_access is access all lzmastream;

@@ -16,7 +16,8 @@ package body xzang.internal.stream_headers is
       return result;
    end bytes_to_header;
 
-   function Check_CRC32 (Self : in stream_header) return Boolean is 
+   function Check_CRC32 (Self : in stream_header) return Boolean 
+   is 
       use GNAT.CRC32;
       crc : GNAT.CRC32.CRC32;
       function flags_to_Sea (f : xzang.internal.stream_flags.stream_flag)

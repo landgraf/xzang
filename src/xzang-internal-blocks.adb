@@ -2,7 +2,7 @@ with xzang.internal.types; use xzang.internal.types;
 with xzang.internal.variable_length_integers;
 with xzang.internal.block_filters; use xzang.internal.block_filters;
 with Interfaces;
-with Ada.Assertions; use Ada.Assertions;
+with Ada.Assertions; use ada.assertions;
 package body xzang.internal.blocks is
 
    procedure Read_header_Size (Self : in out block; R : in out Reader)
@@ -12,7 +12,6 @@ package body xzang.internal.blocks is
          R.Read(Number_Of_Bytes => Length);
    begin
       Self.header.header_Size := 4*(Integer'Val(raw_size(1)) + 1);
-      debug("Header size is " & Self.header.header_Size'Img );
    end Read_Header_Size;
 
    procedure Read_Flags (Self : in out block; R : in out Reader)
@@ -47,12 +46,23 @@ package body xzang.internal.blocks is
    end Read_Uncompressed;
 
    procedure Read_Filter_Flags (Self : in out block; R : in out reader) is
+      use interfaces;
       filter : block_filter;
    begin
       filter.id :=
         xzang.internal.variable_length_integers.decode(R.Read_VLI);
+      if filter.id /= 16#21# then
+         raise constraint_error with "Only lzma parser is supported";
+      end if;
+      -- Filter IDs greater than or equal to 0x4000_0000_0000_0000
+      -- (2^62) are reserved for implementation-specific internal use.
+      -- These Filter IDs MUST never be used in List of Filter Flags.
+      assert (filter.id < 2**62);
       filter.size :=
         xzang.internal.variable_length_integers.decode(R.Read_VLI);
+      if filter.size /= 1 then
+         raise constraint_error with "Only lzma parser is supported";
+      end if;
       filter.properties :=
         xzang.internal.variable_length_integers.decode(R.Read_VLI);
    end Read_Filter_Flags;

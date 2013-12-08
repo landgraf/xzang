@@ -1,4 +1,5 @@
 with xzang.internal.types; use xzang.internal.types;
+with Interfaces; use Interfaces;
 package xzang.internal.block_headers is
 
    type block_header_flag is record
@@ -14,8 +15,8 @@ package xzang.internal.block_headers is
       number_of_filters : Integer := 0;
       has_compressed  : Boolean := False;
       has_uncompressed : Boolean := False;
-      compressed : Integer := 0;
-      uncompressed : Integer := 0;
+      compressed : Interfaces.Unsigned_64 := 0;
+      uncompressed : Interfaces.Unsigned_64 := 0;
    end record;
 
 end xzang.internal.block_headers;

@@ -1,3 +1,4 @@
+with Ada.Assertions; use Ada.Assertions;
 package body xzang.internal.readers is
 
    function Read(Self : in out Reader; Number_Of_Bytes : in Natural)
@@ -82,16 +83,16 @@ package body xzang.internal.readers is
       buffers : byte_array(1..9);
       Last : Integer := 0;
       result : Integer := Integer'First;
+      first_bit : constant := 16#80#;
    begin
-      for I in buffers'Range loop
-         buffers(I..I) := Self.Read(Number_Of_Bytes => 1 );
-         if Integer'Val(buffers(I)) > 127 then
-            debug("Last byte  has been reached. Length=" & I'img);
-            Last := I;
-            exit;
+      loop
+         Last := Last + 1;
+         buffers(Last) := Self.Read(Number_Of_Bytes =>1)(1);
+         exit when Integer'Val(buffers(Last)) < 128;
+         if Last >= buffers'Length then
+            raise CONSTRAINT_ERROR with "Mailformed VLI";
          end if;
       end loop;
-      Self.Offset := Self.Offset + 8*Last;
       return buffers(1..Last);
    end Read_VLI;
 

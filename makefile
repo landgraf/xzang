@@ -35,8 +35,8 @@ build_tools: build_libs
 build: build_libs build_tools
 
 clean:
-	gnat clean -P gnat/${PROJECT}_libs_build
-	gnat clean -P gnat/${PROJECT}_tools_build
+	-gprclean -P gnat/${PROJECT}_libs_build
+	-gprclean -P gnat/${PROJECT}_tools_build
 	## and control shoot to the head...
 	rm -rf bin/ obj/ lib/  tmp/ logadaliz/
 

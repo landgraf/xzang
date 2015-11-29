@@ -453,7 +453,53 @@ Version 1.0.4 (2009-08-27)
 
         Note that non-empty Stream Padding is allowed at the end of the
         file; there doesn't need to be a new Stream after non-empty
-        Stream Padding. This can be convenient in certain situationsck Header field.
+        Stream Padding. This can be convenient in certain situations
+        [GNU-tar].
+
+        The possibility of Stream Padding MUST be taken into account
+        when designing an application that parses Streams backwards,
+        and the application supports concatenated Streams.
+
+
+3. Block
+
+        +==============+=================+===============+=======+
+        | Block Header | Compressed Data | Block Padding | Check |
+        +==============+=================+===============+=======+
+
+
+3.1. Block Header
+
+        +-------------------+-------------+=================+
+        | Block Header Size | Block Flags | Compressed Size |
+        +-------------------+-------------+=================+
+
+             +===================+======================+
+        ---> | Uncompressed Size | List of Filter Flags |
+             +===================+======================+
+
+             +================+--+--+--+--+
+        ---> | Header Padding |   CRC32   |
+             +================+--+--+--+--+
+
+
+3.1.1. Block Header Size
+
+        This field overlaps with the Index Indicator field (see
+        Section 4.1).
+
+        This field contains the size of the Block Header field,
+        including the Block Header Size field itself. Valid values are
+        in the range [0x01, 0xFF], which indicate the size of the Block
+        Header as multiples of four bytes, minimum size being eight
+        bytes:
+
+            real_header_size = (encoded_header_size + 1) * 4;
+
+        If a Block Header bigger than 1024 bytes is needed in the
+        future, a new field can be added between the Block Header and
+        Compressed Data fields. The presence of this new field would
+        be indicated in the Block Header field.
 
 
 3.1.2. Block Flags
@@ -540,7 +586,7 @@ Version 1.0.4 (2009-08-27)
         the Block Header have the size specified in Block Header Size.
         If any of the bytes are not null bytes, the decoder MUST
         indicate an error. It is possible that there is a new field
-     resent which the decoder is not aware of, and can thus parse
+        present which the decoder is not aware of, and can thus parse
         the Block Header incorrectly.
 
 
@@ -639,7 +685,7 @@ Version 1.0.4 (2009-08-27)
         Unpadded Size and Uncompressed Size of the respective Blocks.
 
         Implementation hint: It is possible to verify the Index with
-        constant memory ue by calculating for example SHA-256 of
+        constant memory usage by calculating for example SHA-256 of
         both the real size values and the List of Records, then
         comparing the hash values. Implementing this using
         non-cryptographic hash like CRC32 SHOULD be avoided unless
@@ -723,7 +769,7 @@ Version 1.0.4 (2009-08-27)
         taking advantage of aligned input can be beneficial also when
         a filter is not the first filter in the chain. For example,
         if you compress PowerPC executables, you may want to use the
-        PowerPC filter and chain that with the LZMAter. Because
+        PowerPC filter and chain that with the LZMA2 filter. Because
         not only the input but also the output alignment of the PowerPC
         filter is four bytes, it is now beneficial to set LZMA2
         settings so that the LZMA2 encoder can take advantage of its
@@ -805,7 +851,7 @@ Version 1.0.4 (2009-08-27)
 
             Preferred alignment:
                 Input data:             Adjustable to 1/2/4/8/16 byte(s)
-     put data:            1 byte
+                Output data:            1 byte
 
         The format of the one-byte Filter Properties field is as
         follows:
@@ -890,7 +936,7 @@ Version 1.0.4 (2009-08-27)
 5.3.3. Delta
 
         The Delta filter may increase compression ratio when the value
-        of thcorrelates with the value of an earlier byte
+        of the next byte correlates with the value of an earlier byte
         at specified distance.
 
             Filter ID:                  0x03
@@ -986,7 +1032,7 @@ Version 1.0.4 (2009-08-27)
 
         The program below reads data from standard input, calculates
         the CRC32 and CRC64 values, and prints the calculated values
-        ahexadecimal strings to standard output.
+        as big endian hexadecimal strings to standard output.
 
             #include <stddef.h>
             #include <inttypes.h>
@@ -1099,5 +1145,6 @@ Version 1.0.4 (2009-08-27)
             "gzip will complain about trailing garbage"
           - Note that this URL points to the latest version of the
             manual, and may some day not contain the note which is in
-    For the exact version of the manual, download GNU
+            1.21. For the exact version of the manual, download GNU
             tar 1.21: ftp://ftp.gnu.org/pub/gnu/tar/tar-1.21.tar.gz
+

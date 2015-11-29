@@ -1,18 +1,18 @@
-with xzang.lzmastreams; use xzang.lzmastreams;
-with Ada.Directories; use Ada.Directories;
+with xzang.lzmastreams; 
+with Ada.Directories; 
 with Ada.Command_Line; use Ada.Command_Line;
-with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO; 
 procedure xza is
-   strm  : lzmastream_access;
+   strm  : xzang.lzmastreams.lzmastream_access;
 begin
    if Ada.Command_Line.Argument_Count = 0 or else not
-         Exists(Argument(1)) then
-      Put_Line("File was not specified or doesn't exist...");
+         Ada.Directories.Exists(Argument(1)) then
+      Ada.Text_IO.Put_Line("File was not specified or doesn't exist...");
       return;
    end if;
-      strm := Init(Argument(1), 1000);
+      strm := Xzang.Lzmastreams.Init(Argument(1), 1000);
       loop
-         Put_Line(strm.next_string);
+         Ada.Text_IO.Put_Line(Strm.Next_String);
          exit when strm.EOS;
       end loop;
 
